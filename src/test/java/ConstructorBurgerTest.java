@@ -26,25 +26,25 @@ public class ConstructorBurgerTest {
   }
 
   @Test
-  @DisplayName("Go to the last bun ingredient 'Булки'")
-  public void goToLastBunIngredient() {
-    boolean isDisplayed = basePage.findBunIngredient();
+  @DisplayName("Check if the bun ingredients 'Булки' current")
+  public void checkIfBunIngredientIsCurrent() {
+    boolean isDisplayed = basePage.checkBunIngredientIsCurrent();
 
     assertTrue(isDisplayed);
   }
 
   @Test
-  @DisplayName("Go to the last sauce ingredient 'Соусы")
-  public void goToLastSauceIngredient() {
-    boolean isDisplayed = basePage.findSauceIngredient();
+  @DisplayName("Check if the sauce ingredient 'Соусы' current")
+  public void checkIfSauceIngredientIsCurrent() {
+    boolean isDisplayed = basePage.checkSauceIngredientIsCurrent();
 
     assertTrue(isDisplayed);
   }
 
   @Test
-  @DisplayName("Go to the last filling ingredient 'Начинки'")
-  public void goToLastFillingIngredient() {
-    boolean isDisplayed = basePage.findFillingIngredient();
+  @DisplayName("Check if the filling ingredient 'Начинки' current")
+  public void checkIfFillingIngredientIsCurrent() {
+    boolean isDisplayed = basePage.checkFillingIngredientIsCurrent();
 
     assertTrue(isDisplayed);
   }

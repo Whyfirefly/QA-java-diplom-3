@@ -17,6 +17,8 @@ public class BasePage {
   private SelenideElement loginButton;
   @FindBy(how = How.CLASS_NAME, using = "BurgerIngredients_ingredients__list__2A-mT")
   private ElementsCollection menuIngredients;
+  @FindBy(how = How.XPATH, using = ".//div[contains(@class,'tab_tab_type_current')]")
+  private SelenideElement currentSectionOfIngredients;
 
   @Step("Click account button")
   public LoginPage clickPersonalCabinetButton() {
@@ -36,27 +38,27 @@ public class BasePage {
     return page(LoginPage.class);
   }
 
-  @Step("Find the last bun ingredient")
-  public boolean findBunIngredient() {
+  @Step("Check the bun ingredients current")
+  public boolean checkBunIngredientIsCurrent() {
     SelenideElement bun = menuIngredients.get(0).lastChild();
     bun.scrollIntoView(true);
     bun.click();
-    return bun.isDisplayed();
+    return currentSectionOfIngredients.isDisplayed();
   }
 
-  @Step("Find the last sauce ingredient")
-  public boolean findSauceIngredient() {
+  @Step("Check the sauce ingredients current")
+  public boolean checkSauceIngredientIsCurrent() {
     SelenideElement sauce = menuIngredients.get(1).lastChild();
     sauce.scrollIntoView(true);
     sauce.click();
-    return sauce.isDisplayed();
+    return currentSectionOfIngredients.isDisplayed();
   }
 
-  @Step("Find the last filling ingredient")
-  public boolean findFillingIngredient() {
+  @Step("Check the filling ingredients current")
+  public boolean checkFillingIngredientIsCurrent() {
     SelenideElement filling = menuIngredients.get(2).lastChild();
     filling.scrollIntoView(true);
     filling.click();
-    return filling.isDisplayed();
+    return currentSectionOfIngredients.isDisplayed();
   }
 }
