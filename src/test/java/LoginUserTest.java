@@ -1,14 +1,17 @@
+import api.UserStepsApi;
+import api.UserStepsApiChecks;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.Epic;
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.ValidatableResponse;
 import models.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import pageobject.BasePage;
-import random_data.UserGeneratorData;
+import randomdata.UserGeneratorData;
 
 import java.io.IOException;
 
@@ -18,21 +21,24 @@ import static org.junit.Assert.assertFalse;
 
 @Epic("Login user")
 public class LoginUserTest {
+  private ValidatableResponse response;
   private User user;
   private BasePage basePage;
+  private static String accessToken;
 
   @Before
   public void setUp() throws IOException {
-    user = UserGeneratorData.getRandomUser();
     //initialization our Browser
     initDriver();
     Configuration.timeout = 4000;
     //create an instance of BasePage class
     basePage = open(BasePage.BASE_URL, BasePage.class);
-    basePage.clickLoginButton()
-            .clickRegisterLink()
-            .fillRegisterForm(user.getName(), user.getEmail(), user.getPassword())
-            .clickRegisterButton(Condition.hidden);
+
+    //creation of user
+    user = UserGeneratorData.getRandomUser();
+    response = UserStepsApi.createUser(user);
+    accessToken = response.extract().path("accessToken");
+
     basePage = null;
     //create an instance of BasePage class
     basePage = open(BasePage.BASE_URL, BasePage.class);
@@ -40,7 +46,16 @@ public class LoginUserTest {
 
   @After
   public void clearState() {
-    user = null;
+
+    //login user
+    response = UserStepsApi.loginUser(user, accessToken);
+    UserStepsApiChecks.checkUserLoginByValidCredentialsSuccess(response);
+
+    //user deletion`
+    if (accessToken != null) {
+      response = UserStepsApi.deleteUser(accessToken);
+    }
+    //clear browser
     Selenide.clearBrowserLocalStorage();
   }
 
@@ -57,6 +72,7 @@ public class LoginUserTest {
   @Test
   @DisplayName("Login user by personal cabinet button 'Личный кабинет'")
   public void loginUserByAccountButton() {
+    accessToken = response.extract().path("accessToken");
     boolean isDisplayed = basePage.clickPersonalCabinetButton()
             .fillLoginForm(user.getEmail(), user.getPassword())
             .clickLoginButton(Condition.hidden);
@@ -67,6 +83,7 @@ public class LoginUserTest {
   @Test
   @DisplayName("Login user on the registration page")
   public void loginUserByRegisterPage() {
+    accessToken = response.extract().path("accessToken");
     boolean isDisplayed = basePage.clickLoginButton()
             .clickRegisterLink()
             .clickLoginLink()
@@ -79,6 +96,7 @@ public class LoginUserTest {
   @Test
   @DisplayName("Login user on the password recovery page")
   public void loginUserByForgotPasswordPage() {
+    accessToken = response.extract().path("accessToken");
     boolean isDisplayed = basePage.clickLoginButton()
             .clickForgotPasswordLink()
             .clickLoginLink()

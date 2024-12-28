@@ -1,4 +1,4 @@
-package random_data;
+package randomdata;
 
 import io.qameta.allure.Allure;
 import models.User;
